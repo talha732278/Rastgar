@@ -1,0 +1,463 @@
+/* Journey layout: sticky 3D stage with chapter articles scrolling over it. */
+
+/* Transparent all the way down: the living background shows behind the 3D
+ * canvas (which has alpha), and every darkening layer below is translucent
+ * and fades out before the stage's edges. */
+.hub {
+  --hub-progress: 0;
+  position: relative;
+}
+
+.hub__stage {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.hub__posters,
+.hub__poster,
+.hub__poster img,
+.hub__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hub__poster img {
+  display: block;
+  object-fit: cover;
+}
+
+.hub__poster--hero img {
+  animation: hub-emerge 1.6s cubic-bezier(0.45, 0, 0.55, 1) 0.15s both;
+}
+
+.hub__poster--exploded {
+  visibility: hidden;
+}
+
+@keyframes hub-emerge {
+  from {
+    filter: brightness(0.1);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+.hub__canvas {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hub[data-live="true"] .hub__canvas {
+  opacity: 1;
+}
+
+.hub[data-live="true"] .hub__posters {
+  visibility: hidden;
+  transition: visibility 0s linear 0.45s;
+}
+
+/* Reduced motion: posters only, swapped per chapter with no transition. */
+.hub[data-mode="static"][data-active="3"] .hub__poster--hero,
+.hub[data-mode="static"][data-active="4"] .hub__poster--hero {
+  visibility: hidden;
+}
+
+.hub[data-mode="static"][data-active="3"] .hub__poster--exploded,
+.hub[data-mode="static"][data-active="4"] .hub__poster--exploded {
+  visibility: visible;
+}
+
+.hub__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+/* Translucent reading veils behind chapter copy. Each one also fades out at
+ * the stage's top and bottom edges, so when the stage scrolls away no band
+ * is left on the moving background. */
+.hub__scrim--left,
+.hub__scrim--right {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 86%, transparent 100%);
+}
+
+.hub__scrim--left {
+  background: linear-gradient(90deg, rgb(3 7 20 / 0.8) 0%, rgb(3 7 20 / 0.6) 28%, rgb(3 7 20 / 0.22) 44%, transparent 58%);
+}
+
+.hub__scrim--right {
+  background: linear-gradient(270deg, rgb(3 7 20 / 0.8) 0%, rgb(3 7 20 / 0.6) 28%, rgb(3 7 20 / 0.22) 44%, transparent 58%);
+}
+
+.hub__scrim--bottom {
+  background: linear-gradient(0deg, transparent 0%, rgb(3 7 20 / 0.78) 9%, rgb(3 7 20 / 0.62) 30%, rgb(3 7 20 / 0.2) 46%, transparent 58%);
+}
+
+.hub:not([data-active]) .hub__scrim--left,
+.hub[data-active="0"] .hub__scrim--left,
+.hub[data-active="2"] .hub__scrim--left,
+.hub[data-active="1"] .hub__scrim--right,
+.hub[data-active="3"] .hub__scrim--right,
+.hub[data-active="4"] .hub__scrim--bottom {
+  opacity: 1;
+}
+
+.hub__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 80% at 55% 50%, transparent 58%, rgb(2 5 16 / 0.42) 100%);
+  -webkit-mask-image: linear-gradient(180deg, black 70%, transparent 100%);
+  mask-image: linear-gradient(180deg, black 70%, transparent 100%);
+}
+
+/* Engineering-drawing callouts, revealed on the exploded view. */
+
+.hub__callouts {
+  --reveal: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hub-callout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.hub-callout[data-hidden="true"] {
+  visibility: hidden;
+}
+
+.hub-callout__dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--ground-deep);
+  transform: scale(var(--reveal));
+}
+
+.hub-callout__line {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 58px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  transform: scaleY(var(--reveal));
+}
+
+.hub-callout[data-dir="up"] .hub-callout__line {
+  top: -62px;
+  transform-origin: bottom;
+}
+
+.hub-callout[data-dir="down"] .hub-callout__line {
+  top: 4px;
+  transform-origin: top;
+}
+
+.hub-callout__text {
+  position: absolute;
+  left: 0;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.4rem 0.8rem 0.45rem 0.9rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgb(4 8 24 / 0.8);
+  box-shadow: inset 3px 0 0 var(--accent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  clip-path: inset(0 calc(100% - var(--reveal) * 100%) 0 0 round 12px);
+}
+
+.hub-callout[data-dir="up"] .hub-callout__text {
+  bottom: 66px;
+}
+
+.hub-callout[data-dir="down"] .hub-callout__text {
+  top: 66px;
+}
+
+.hub-callout__text strong {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hub-callout__text small {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+/* Chapter rail. */
+
+.hub__rail {
+  position: absolute;
+  top: 50%;
+  right: var(--gutter);
+  z-index: 5;
+  display: grid;
+  gap: 0.15rem;
+  padding-left: 1rem;
+  transform: translateY(-50%);
+}
+
+.hub__rail-track {
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.hub__rail-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleY(var(--hub-progress));
+  transform-origin: top;
+}
+
+.hub__rail-button {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-height: 2.25rem;
+  padding: 0.4rem 0;
+  border: 0;
+  color: var(--muted);
+  background: none;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hub__rail-button:hover {
+  color: var(--ink);
+  transform: translateX(3px);
+}
+
+.hub__rail-button[aria-current="step"] {
+  color: var(--ink);
+}
+
+.hub[data-active="4"] .hub__rail-label {
+  display: none;
+}
+
+.hub__rail-button[aria-current="step"] .hub__rail-index {
+  color: var(--accent);
+}
+
+/* Chapters. */
+
+.hub__story {
+  position: relative;
+  z-index: 2;
+  margin-top: -100dvh;
+}
+
+.hub-chapter {
+  position: relative;
+}
+
+.hub-chapter__pin {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100dvh;
+  padding: 104px calc(var(--gutter) + 9rem) 72px var(--gutter);
+}
+
+.hub-chapter[data-align="right"] .hub-chapter__pin {
+  justify-content: flex-end;
+}
+
+.hub-chapter[data-align="bottom"] .hub-chapter__pin {
+  align-items: flex-end;
+  padding-bottom: 8dvh;
+}
+
+.hub-chapter__copy {
+  position: relative;
+  isolation: isolate;
+  max-width: 34rem;
+}
+
+/* A gentle shadow pocket behind the copy, on top of the side veils, so body
+ * text holds 4.5:1 whatever current flows behind it. */
+.hub-chapter__copy::before {
+  content: "";
+  position: absolute;
+  inset: -2rem -2.5rem;
+  z-index: -1;
+  border-radius: 56px;
+  background: rgb(3 7 20 / 0.5);
+  filter: blur(32px);
+  pointer-events: none;
+}
+
+.hub-chapter[data-chapter="0"] .hub-chapter__copy {
+  max-width: 44rem;
+}
+
+.hub-chapter[data-align="bottom"] .hub-chapter__copy {
+  max-width: 46rem;
+}
+
+.hub-chapter__title {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 4.6vw, 4.4rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.hub-chapter__title--hero {
+  font-size: clamp(2.7rem, 5.6vw, 5.4rem);
+}
+
+.hub-word {
+  display: inline-block;
+  overflow: hidden;
+  margin-right: 0.22em;
+  padding-bottom: 0.06em;
+  vertical-align: top;
+}
+
+.hub-word:last-child {
+  margin-right: 0;
+}
+
+.hub-word > span {
+  display: inline-block;
+  animation: hub-word-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes hub-word-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+.hub-chapter__body {
+  max-width: 44ch;
+  margin-top: 1.4rem;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ink) 80%, var(--ground));
+}
+
+.hub-chapter__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.hub-chapter__tags li {
+  padding: 0.42rem 0.85rem;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-pill);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: rgb(4 8 24 / 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.hub-chapter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem 2rem;
+  margin-top: 2.2rem;
+}
+
+@media (max-width: 1100px) {
+  .hub__rail-label {
+    display: none;
+  }
+
+  .hub-chapter__pin {
+    padding-right: calc(var(--gutter) + 3.5rem);
+  }
+}
+
+@media (max-width: 860px), (max-aspect-ratio: 19/20) {
+  .hub__rail,
+  .hub__callouts,
+  .hub__scrim {
+    display: none;
+  }
+
+  .hub__shade {
+    background: linear-gradient(180deg, transparent 34%, rgb(3 7 20 / 0.62) 54%, rgb(3 7 20 / 0.84) 74%, rgb(3 7 20 / 0.86) 100%);
+    -webkit-mask-image: linear-gradient(180deg, black 93%, transparent 100%);
+    mask-image: linear-gradient(180deg, black 93%, transparent 100%);
+  }
+
+  .hub-chapter__pin,
+  .hub-chapter[data-align="right"] .hub-chapter__pin,
+  .hub-chapter[data-align="bottom"] .hub-chapter__pin {
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 88px var(--gutter) max(2.5rem, env(safe-area-inset-bottom));
+  }
+
+  .hub-chapter__body {
+    font-size: 1.02rem;
+  }
+
+  .hub-chapter__copy::before {
+    inset: -1.25rem -0.75rem;
+    filter: blur(22px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub__poster--hero img,
+  .hub-word > span {
+    animation: none;
+  }
+
+  .hub__canvas,
+  .hub__rail-button,
+  .hub__scrim {
+    transition: none;
+  }
+}
