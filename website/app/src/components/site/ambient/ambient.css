@@ -1,0 +1,47 @@
+/* Living background layer. Sits behind every section (z-index -1 in the root
+ * stacking context, so body must stay transparent). The gradient fallback is
+ * the same one html paints, so the canvas fading in changes nothing but
+ * motion. The canvas is drawn at reduced resolution and upscaled here. */
+
+.ambient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--ground);
+  background-image: var(--ambient-fallback);
+}
+
+.ambient__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.ambient[data-live="true"] .ambient__canvas {
+  opacity: 1;
+}
+
+/* Fine film grain at full resolution (the shader's own grain is half-res and
+ * mostly dithers). A static tile: cheap, and it never moves on its own. */
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.85 0 0 0 0 0.9 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient__canvas {
+    transition: none;
+  }
+}

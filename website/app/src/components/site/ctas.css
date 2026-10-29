@@ -1,0 +1,447 @@
+/* Calls to action. Owned by ctas.tsx.
+ *
+ * Layout and details only: the liquid glass material (tint, backdrop blur,
+ * refraction, rim, sheen, glint, squish) lives in ./glass/glass.css and is
+ * applied with the .lg / .lg--primary / .lg--clear classes. Every CTA is a
+ * full pill except the seal, which is a circle. Overrides of the material
+ * use .lg.cta-* so they win regardless of stylesheet order. */
+
+.cta-nav,
+.cta-hero,
+.cta-explore,
+.cta-docs,
+.cta-catalog,
+.cta-call,
+.status-page__link {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--display);
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------ bead */
+/* A small round drop of glass that carries an arrow or glyph. */
+
+.cta-bead {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0) 62%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03));
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.55),
+    inset 0 -2px 3px rgb(0 0 0 / 0.2),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 4px 10px -4px rgb(0 0 0 / 0.45);
+  color: #ffffff;
+}
+
+.cta-bead svg {
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3));
+  transition: translate 0.45s var(--ease);
+}
+
+.cta-bead--sm {
+  width: 34px;
+  height: 34px;
+}
+
+.cta-bead--sm svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* On red glass the bead is a darker, deeper drop so the arrow stays crisp. */
+.cta-bead--hero {
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 60%),
+    linear-gradient(180deg, rgb(120 0 10 / 0.22), rgb(70 0 6 / 0.42));
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.6),
+    inset 0 -2px 4px rgb(255 140 140 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    0 4px 10px -4px rgb(60 0 6 / 0.6);
+}
+
+@media (hover: hover) {
+  .cta-hero:hover .cta-bead svg,
+  .cta-catalog:hover .cta-bead svg {
+    translate: 3px 0;
+  }
+
+  .cta-explore:hover .cta-bead svg {
+    translate: 0 2px;
+  }
+}
+
+.cta-hero:focus-visible .cta-bead svg,
+.cta-catalog:focus-visible .cta-bead svg {
+  translate: 3px 0;
+}
+
+/* ------------------------------------------------------------- nav */
+
+.lg.cta-nav {
+  gap: 0.6rem;
+  height: 44px;
+  padding: 0 1.15rem 0 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.cta-nav__dot {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff6a72 0%, var(--accent) 55%, var(--accent-deep) 100%);
+  box-shadow: 0 0 10px rgb(227 6 19 / 0.7);
+  transition: scale 0.35s var(--ease);
+}
+
+.cta-nav__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.cta-nav[data-status="active"] {
+  --lg-rim: 0.9;
+}
+
+@media (hover: hover) {
+  .cta-nav:hover .cta-nav__dot {
+    scale: 1.2;
+  }
+
+  .cta-nav:hover .cta-nav__dot::after {
+    animation: cta-dot-pulse 0.8s var(--ease) 1;
+  }
+}
+
+.cta-nav:focus-visible .cta-nav__dot::after {
+  animation: cta-dot-pulse 0.8s var(--ease) 1;
+}
+
+@keyframes cta-dot-pulse {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+@media (max-width: 420px) {
+  .lg.cta-nav {
+    gap: 0.5rem;
+    height: 42px;
+    padding: 0 0.9rem 0 0.8rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* ----------------------------------------------------- hero primary */
+
+.lg.cta-hero {
+  gap: 1.1rem;
+  height: 60px;
+  padding: 0 8px 0 1.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+@media (max-width: 420px) {
+  .lg.cta-hero {
+    gap: 0.9rem;
+    height: 56px;
+    padding-left: 1.45rem;
+    font-size: 0.98rem;
+  }
+
+  .cta-bead--hero {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* --------------------------------------------------- hero secondary */
+
+.lg.cta-explore {
+  gap: 0.85rem;
+  height: 60px;
+  padding: 0 13px 0 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+}
+
+@media (max-width: 420px) {
+  .lg.cta-explore {
+    height: 56px;
+    padding-left: 1.3rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ---------------------------------------------------- documentation */
+
+.lg.cta-docs {
+  gap: 0.8rem;
+  height: 54px;
+  padding: 0 1.35rem 0 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+}
+
+/* ------------------------------------------------------ catalog link */
+
+.lg.cta-catalog {
+  gap: 0.85rem;
+  height: 52px;
+  padding: 0 9px 0 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+}
+
+/* ------------------------------------------------------- phone call */
+
+.lg.cta-call {
+  gap: 0.9rem;
+  height: 68px;
+  padding: 0 1.7rem 0 10px;
+  text-transform: none;
+}
+
+.cta-call__bead {
+  width: 48px;
+  height: 48px;
+}
+
+.cta-call__bead svg {
+  width: 21px;
+  height: 21px;
+}
+
+.cta-call__text {
+  display: grid;
+  gap: 0.1rem;
+  line-height: 1.1;
+}
+
+.cta-call__label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+.cta-call__number {
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .cta-call:hover .cta-call__bead svg {
+    animation: call-ring 0.6s var(--ease) 1;
+  }
+}
+
+@keyframes call-ring {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-14deg);
+  }
+  45% {
+    transform: rotate(11deg);
+  }
+  70% {
+    transform: rotate(-6deg);
+  }
+}
+
+/* ----------------------------------------------------- closing seal */
+/* A clear glass disc carries the ring text; a red glass core sits on top.
+ * The anchor itself never moves: disc and core follow the pointer at
+ * different strengths, so the seal reads as two stacked drops. */
+
+.cta-seal {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cta-seal:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.lg.cta-seal__disc {
+  --lg-dim: 0.7;
+  --lg-sheen: 0.07;
+  --gx: 30%;
+  --gy: 8%;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  translate: calc(var(--mx, 0px) * 0.55) calc(var(--my, 0px) * 0.55 + var(--lg-lift));
+}
+
+.cta-seal__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--steel-hi);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2.6px;
+  pointer-events: none;
+  translate: calc(var(--mx, 0px) * 0.55) calc(var(--my, 0px) * 0.55);
+  transition: translate 0.5s var(--ease);
+}
+
+.lg.cta-seal__core {
+  --gx: 30%;
+  --gy: 10%;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+}
+
+.cta-seal__core svg {
+  width: 34px;
+  height: 34px;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1.5px rgb(70 0 6 / 0.5));
+  transition: translate 0.45s var(--ease);
+}
+
+@media (hover: hover) {
+  .cta-seal:hover > .lg {
+    --lg-lift: -2px;
+    --lg-rim: 1;
+    --lg-glint: 0.17;
+  }
+
+  .cta-seal:hover > .cta-seal__core {
+    scale: 1.05;
+  }
+
+  .cta-seal:hover .cta-seal__ring {
+    animation: seal-turn 9s linear infinite;
+  }
+
+  .cta-seal:hover .cta-seal__core svg {
+    translate: 3px 0;
+  }
+}
+
+.cta-seal:focus-visible > .lg {
+  --lg-rim: 1;
+}
+
+.cta-seal:focus-visible > .cta-seal__core {
+  scale: 1.05;
+}
+
+/* Press: both drops squash together, the core harder. */
+.cta-seal:active > .lg {
+  --lg-lift: 0px;
+  transition:
+    translate 0.5s var(--ease),
+    scale 0.14s cubic-bezier(0.3, 0.7, 0.4, 1),
+    box-shadow 0.4s ease,
+    --lg-rim 0.4s ease,
+    --lg-glint 0.4s ease;
+}
+
+.cta-seal:active > .cta-seal__disc {
+  scale: 1.025 0.97;
+}
+
+.cta-seal:active > .cta-seal__core {
+  scale: 1.1 0.92;
+}
+
+@keyframes seal-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------- 404 / error page actions */
+/* CSS only: the clear glass material comes from glass.css; this sets the
+ * shape and type, and resets the native button. */
+
+.status-page__link {
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 1rem;
+  padding: 0 1.6rem;
+  border: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .lg.cta-seal__disc,
+  .cta-seal__ring {
+    translate: none;
+  }
+
+  .cta-nav__dot::after,
+  .cta-seal__ring,
+  .cta-call__bead svg {
+    animation: none !important;
+  }
+
+  .cta-seal:hover > .cta-seal__core,
+  .cta-seal:focus-visible > .cta-seal__core,
+  .cta-seal:active > .cta-seal__disc,
+  .cta-seal:active > .cta-seal__core {
+    scale: none;
+  }
+
+  .cta-bead svg,
+  .cta-seal__core svg {
+    transition: none;
+  }
+}

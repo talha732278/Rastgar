@@ -1,0 +1,1134 @@
+/* Quote request page. Owned by quote-page.tsx and quote-glass.tsx.
+ * Same system as the home page: copy on shadow pockets over the living
+ * background, a 22px glass panel for the form, pills for controls, red as
+ * the only accent. Fields are recessed glass (pills, 18px for text areas);
+ * buttons are raised liquid glass (.qbtn). */
+
+.quote {
+  --q-field-bg: linear-gradient(180deg, rgb(2 6 20 / 0.42) 0%, rgb(12 26 64 / 0.3) 100%);
+  --q-field-line: rgb(176 198 240 / 0.26);
+  --q-field-line-hi: rgb(214 228 255 / 0.5);
+  --q-error: #ff9ea5;
+  --q-error-line: rgb(255 96 108 / 0.85);
+
+  position: relative;
+  padding: clamp(8.5rem, 13vw, 10rem) 0 clamp(5rem, 9vw, 8rem);
+}
+
+.quote__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "intro panel"
+    "contacts panel";
+  align-items: start;
+  gap: clamp(2.5rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 6.5rem);
+}
+
+/* -------------------------------------------------------------- intro */
+
+.quote__intro {
+  grid-area: intro;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Shadow pocket: keeps copy readable over the brightest currents. */
+.quote__intro::before {
+  content: "";
+  position: absolute;
+  inset: -2.25rem -3rem;
+  z-index: -1;
+  border-radius: 56px;
+  background: var(--pocket);
+  filter: blur(34px);
+  pointer-events: none;
+}
+
+.quote__title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 6vw, 5.4rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.quote__lede {
+  max-width: 34ch;
+  margin: 1.4rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.quote__label {
+  margin: 0 0 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel-hi);
+}
+
+.quote__next {
+  margin-top: clamp(2.5rem, 4.5vw, 3.5rem);
+}
+
+.qsteps {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qstep {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 1.1rem;
+  padding-bottom: 1.6rem;
+}
+
+.qstep:last-child {
+  padding-bottom: 0;
+}
+
+/* Rail joining the step numbers. */
+.qstep:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 3.15rem;
+  bottom: 0.4rem;
+  left: calc(1.375rem - 0.5px);
+  width: 1px;
+  background: linear-gradient(180deg, rgb(176 198 240 / 0.34), rgb(176 198 240 / 0.08));
+}
+
+.qstep__num {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 62%),
+    var(--glass);
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.34),
+    inset 0 0 0 1px var(--glass-line),
+    0 6px 14px -8px rgb(0 0 0 / 0.6);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.qstep:first-child .qstep__num {
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0) 62%),
+    linear-gradient(180deg, rgb(240 36 50 / 0.82), rgb(150 4 16 / 0.92));
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.6),
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    0 8px 18px -8px rgb(150 4 16 / 0.8);
+  color: #ffffff;
+}
+
+.qstep__title {
+  margin: 0.55rem 0 0.3rem;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.qstep__body {
+  max-width: 40ch;
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------- contacts */
+
+.qcontacts {
+  grid-area: contacts;
+  position: sticky;
+  top: 96px;
+  padding: clamp(1.4rem, 2.4vw, 1.9rem) clamp(1.3rem, 2.4vw, 1.9rem);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-panel);
+  background: var(--glass-sheen), var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 rgb(214 228 255 / 0.05) inset, 0 40px 80px -40px rgb(1 4 16 / 0.7);
+}
+
+.qcontacts__list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.qcontacts__item {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.qcontacts__item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.qcontacts__item:last-child {
+  padding-bottom: 0;
+}
+
+.qcontacts__item dt {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  align-self: start;
+  padding-top: 0.15rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.qcontacts__item dt svg {
+  flex: none;
+  color: var(--steel);
+}
+
+.qcontacts__item dd {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+}
+
+.qcontacts__item address {
+  display: grid;
+  font-style: normal;
+  color: var(--ink);
+}
+
+.qcontacts__item a {
+  justify-self: start;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+  transition: border-color 0.2s ease;
+}
+
+.qcontacts__item a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.qcontacts__meta {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------- panel */
+
+.qpanel {
+  grid-area: panel;
+  position: relative;
+  padding: clamp(1.4rem, 3vw, 2.75rem);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-panel);
+  background: var(--glass-sheen), var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    0 1px 0 rgb(214 228 255 / 0.07) inset,
+    0 50px 100px -50px rgb(1 4 16 / 0.85);
+  scroll-margin-top: 96px;
+}
+
+/* A faint red bloom on the top edge, the panel's only colour. */
+.qpanel::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 90 102 / 0.6), transparent);
+  pointer-events: none;
+}
+
+.qform__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.qform__title,
+.qdone__title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.qform__title:focus,
+.qdone__title:focus {
+  outline: none;
+}
+
+.qform__title:focus-visible,
+.qdone__title:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
+.qform__required {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.qform__prefill {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -0.5rem 0 1.75rem;
+}
+
+.qform__prefill-label {
+  margin-right: 0.25rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.qchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 30px;
+  padding: 0 0.85rem;
+  border-radius: var(--radius-pill);
+  background: rgb(214 228 255 / 0.07);
+  box-shadow: inset 0 0 0 1px rgb(176 198 240 / 0.24), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.qchip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgb(227 6 19 / 0.7);
+}
+
+/* ------------------------------------------------------------ fieldsets */
+
+.qset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.qset + .qset {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Floated so the legend lays out as ordinary content instead of sitting
+ * in the fieldset's top border. */
+.qset__legend {
+  float: left;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  margin-bottom: 1.25rem;
+  padding: 0;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.qset__legend span {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.qset__grid {
+  clear: both;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem 1rem;
+}
+
+/* --------------------------------------------------------------- fields */
+
+.qfield {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.qfield--full {
+  grid-column: 1 / -1;
+}
+
+.qfield__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-inline: 0.35rem;
+}
+
+.qfield__label {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--steel-hi);
+}
+
+.qfield__req {
+  margin-left: 0.3em;
+  font-weight: 700;
+  color: var(--accent);
+  filter: brightness(1.35);
+}
+
+.qfield__count {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.qfield__hint {
+  margin: 0;
+  padding-inline: 0.35rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.qfield__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0;
+  padding-inline: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--q-error);
+}
+
+.qfield__error svg {
+  flex: none;
+  margin-top: 0.12rem;
+}
+
+/* Recessed glass: darker than the panel, lit from below. */
+.qinput {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin: 0;
+  padding: 0 1.25rem;
+  border: 1px solid var(--q-field-line);
+  border-radius: var(--radius-pill);
+  background: var(--q-field-bg);
+  box-shadow:
+    inset 0 2px 4px rgb(1 4 16 / 0.45),
+    inset 0 -1px 0 rgb(214 228 255 / 0.06),
+    0 1px 0 rgb(214 228 255 / 0.05);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  caret-color: var(--accent);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.qinput::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .qinput:hover {
+    border-color: rgb(196 214 246 / 0.4);
+  }
+}
+
+.qinput:focus {
+  outline: none;
+}
+
+.qinput:focus-visible {
+  border-color: var(--q-field-line-hi);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow:
+    inset 0 2px 4px rgb(1 4 16 / 0.45),
+    0 0 0 6px rgb(227 6 19 / 0.14);
+}
+
+.qinput[aria-invalid="true"] {
+  border-color: var(--q-error-line);
+  background:
+    linear-gradient(180deg, rgb(120 0 12 / 0.22), rgb(60 0 8 / 0.12)),
+    var(--q-field-bg);
+}
+
+.qinput--area {
+  height: auto;
+  min-height: 8.5rem;
+  padding: 0.9rem 1.25rem;
+  border-radius: 18px;
+  resize: vertical;
+}
+
+.qinput--parts {
+  min-height: 5.75rem;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+}
+
+/* Native autofill would paint the field light; keep it navy. */
+.qinput:-webkit-autofill,
+.qinput:-webkit-autofill:hover,
+.qinput:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 100px var(--ground-deep) inset;
+  caret-color: var(--accent);
+  transition: background-color 9999s ease-out 0s;
+}
+
+.qselect {
+  position: relative;
+}
+
+.qinput--select {
+  padding-right: 3.25rem;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.qinput--select option {
+  background: var(--ground-deep);
+  color: var(--ink);
+}
+
+.qselect__caret {
+  position: absolute;
+  top: 50%;
+  right: 1.15rem;
+  color: var(--steel);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+/* ---------------------------------------------------------------- foot */
+
+.qform__foot {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem 1.75rem;
+  margin-top: 2.25rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.qform__notes {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qform__notes li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.qform__notes svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--steel);
+}
+
+.qform__problem {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--q-error);
+}
+
+.qform__problem:empty {
+  display: none;
+}
+
+.qform__problem svg {
+  flex: none;
+  margin-top: 0.15rem;
+}
+
+/* ---------------------------------------------------------- confirmed */
+
+.qdone {
+  display: grid;
+  justify-items: start;
+  animation: qdone-in 0.6s var(--ease) both;
+}
+
+@keyframes qdone-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.qdone__mark {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1.4rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 60%),
+    linear-gradient(180deg, rgb(240 36 50 / 0.82) 0%, rgb(206 10 24 / 0.86) 52%, rgb(150 4 16 / 0.92) 100%);
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.6),
+    inset 0 -2px 4px rgb(255 140 140 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    0 12px 26px -10px rgb(150 4 16 / 0.8);
+  color: #ffffff;
+}
+
+.qdone__lede {
+  max-width: 50ch;
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.qdone__lede strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.qdone__summary {
+  width: 100%;
+  margin-top: 1.9rem;
+  padding: clamp(1.1rem, 2.2vw, 1.6rem);
+  border-radius: 18px;
+  background: var(--q-field-bg);
+  box-shadow:
+    inset 0 2px 4px rgb(1 4 16 / 0.45),
+    inset 0 0 0 1px rgb(176 198 240 / 0.18);
+}
+
+.qdone__subject {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.qdone__subject .quote__label {
+  margin: 0;
+}
+
+.qdone__rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem 1.5rem;
+  margin: 0;
+}
+
+.qdone__row {
+  min-width: 0;
+}
+
+.qdone__row--wide {
+  grid-column: 1 / -1;
+}
+
+.qdone__row dt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.qdone__row dd {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  color: var(--ink);
+}
+
+.qdone__row dd[data-empty="true"] {
+  color: var(--muted);
+}
+
+.qdone__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.75rem;
+}
+
+.qlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--steel-hi);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.qlink:hover {
+  color: var(--ink);
+}
+
+.qdone__status {
+  min-height: 1.4em;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--steel-hi);
+}
+
+.qdone__fallback {
+  width: 100%;
+  margin: 0.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.qdone__fallback a {
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  transition: border-color 0.2s ease;
+}
+
+.qdone__fallback a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* ------------------------------------------------------- glass buttons */
+
+@property --qb-rim {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.85;
+}
+
+.qbtn {
+  --qb-tint: linear-gradient(180deg, rgb(26 42 82 / 0.42) 0%, rgb(6 12 32 / 0.54) 100%);
+  --qb-rim: 0.82;
+  --qb-rim-far: 0.34;
+  --qb-glint: 0.1;
+  --qb-caustic: 205 222 255;
+  --qb-drop: 0 14px 30px -16px rgb(0 0 0 / 0.75), 0 3px 8px -3px rgb(0 0 0 / 0.45);
+  --qb-lift: 0px;
+  --gx: 24%;
+  --gy: 0%;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  height: 48px;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--qb-tint);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6) brightness(0.7);
+  backdrop-filter: blur(14px) saturate(1.6) brightness(0.7);
+  box-shadow:
+    inset 1.5px 2px 1.5px -1px rgb(255 255 255 / 0.3),
+    inset -1.5px -2px 1.5px -1px rgb(255 255 255 / 0.15),
+    inset 0 -14px 20px -16px rgb(var(--qb-caustic) / 0.32),
+    var(--qb-drop);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgb(2 6 20 / 0.45);
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transform: translateY(var(--qb-lift));
+  transition:
+    transform 0.5s var(--ease),
+    box-shadow 0.4s ease,
+    --qb-rim 0.4s ease;
+}
+
+/* Specular rim: a hairline ring, bright top-left, softer bottom-right. */
+.qbtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.25px;
+  border-radius: inherit;
+  background:
+    radial-gradient(40% 90% at var(--gx) var(--gy), rgb(255 255 255 / calc(var(--qb-glint) * 4.5)), transparent 72%),
+    radial-gradient(32% 115% at 5% 0%, rgb(255 255 255 / var(--qb-rim)), transparent 72%),
+    radial-gradient(30% 115% at 95% 100%, rgb(255 255 255 / var(--qb-rim-far)), transparent 72%),
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / calc(var(--qb-rim) * 0.45)) 0%,
+      rgb(255 255 255 / 0.05) 36%,
+      rgb(255 255 255 / 0.03) 64%,
+      rgb(255 255 255 / calc(var(--qb-rim-far) * 0.6)) 100%
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* Top sheen, caustic glow along the bottom, pointer glint. */
+.qbtn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(55% 130% at var(--gx) var(--gy), rgb(255 255 255 / var(--qb-glint)), transparent 70%),
+    radial-gradient(70% 55% at 50% 0%, rgb(255 255 255 / 0.1), transparent 75%),
+    radial-gradient(62% 48% at 50% 104%, rgb(var(--qb-caustic) / 0.2), transparent 72%);
+  pointer-events: none;
+}
+
+.qbtn--primary {
+  --qb-tint: linear-gradient(
+    180deg,
+    rgb(240 36 50 / 0.8) 0%,
+    rgb(206 10 24 / 0.86) 52%,
+    rgb(150 4 16 / 0.92) 100%
+  );
+  --qb-rim: 0.92;
+  --qb-rim-far: 0.42;
+  --qb-caustic: 255 150 150;
+  --qb-drop: 0 18px 36px -16px rgb(150 4 16 / 0.8), 0 4px 10px -4px rgb(0 0 0 / 0.5);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5) brightness(0.8);
+  backdrop-filter: blur(12px) saturate(1.5) brightness(0.8);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgb(70 0 6 / 0.55);
+}
+
+.qbtn__icon {
+  display: inline-grid;
+  place-items: center;
+  color: var(--steel-hi);
+}
+
+.qbtn__bead {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(90% 80% at 32% 18%, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 60%),
+    linear-gradient(180deg, rgb(120 0 10 / 0.22), rgb(70 0 6 / 0.42));
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.6),
+    inset 0 -2px 4px rgb(255 140 140 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    0 4px 10px -4px rgb(60 0 6 / 0.6);
+  color: #ffffff;
+}
+
+.qbtn__bead svg {
+  width: 21px;
+  height: 21px;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3));
+  transition: translate 0.45s var(--ease);
+}
+
+.qbtn--bead {
+  gap: 1.1rem;
+  height: 60px;
+  padding: 0 9px 0 1.75rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.qbtn:focus-visible {
+  --qb-rim: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.qbtn--primary:focus-visible {
+  outline-color: var(--ink);
+}
+
+@media (hover: hover) {
+  .qbtn:hover {
+    --qb-lift: -2px;
+    --qb-rim: 1;
+    --qb-glint: 0.17;
+  }
+
+  .qbtn:hover .qbtn__bead svg {
+    translate: 3px 0;
+  }
+}
+
+.qbtn:focus-visible .qbtn__bead svg {
+  translate: 3px 0;
+}
+
+/* Press: the drop squashes, then springs back on release. */
+.qbtn:active {
+  --qb-lift: 0px;
+  transform: scale(1.03, 0.94);
+  transition:
+    transform 0.14s cubic-bezier(0.3, 0.7, 0.4, 1),
+    box-shadow 0.4s ease;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .qbtn {
+    --qb-tint: linear-gradient(180deg, rgb(24 38 76 / 0.92) 0%, rgb(8 16 40 / 0.95) 100%);
+  }
+
+  .qbtn--primary {
+    --qb-tint: linear-gradient(180deg, rgb(232 24 38) 0%, rgb(196 8 22) 52%, rgb(150 4 16) 100%);
+  }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 1100px) {
+  .quote__grid {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .quote__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      "intro"
+      "panel"
+      "contacts";
+  }
+
+  .qcontacts {
+    position: static;
+  }
+
+  .quote__lede {
+    max-width: 44ch;
+  }
+
+  .qstep__body {
+    max-width: 52ch;
+  }
+}
+
+@media (max-width: 760px) {
+  .quote__intro::before {
+    inset: -1.5rem -0.75rem;
+    filter: blur(24px);
+  }
+}
+
+@media (max-width: 560px) {
+  .quote__lede {
+    font-size: 1.05rem;
+  }
+
+  .quote__next {
+    margin-top: 2.25rem;
+  }
+
+  .quote__label {
+    margin-bottom: 1rem;
+  }
+
+  .qstep {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0.9rem;
+    padding-bottom: 1.1rem;
+  }
+
+  .qstep:not(:last-child)::before {
+    top: 2.6rem;
+    left: calc(1.125rem - 0.5px);
+  }
+
+  .qstep__num {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.7rem;
+  }
+
+  .qstep__title {
+    margin-top: 0.3rem;
+    font-size: 1.02rem;
+  }
+
+  .qstep__body {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .qset__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qpanel {
+    padding: 1.4rem 1.1rem 1.5rem;
+  }
+
+  .qform__head {
+    margin-bottom: 1.4rem;
+  }
+
+  .qform__foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qform__submit {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .qdone__rows {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qdone__actions .qbtn {
+    flex: 1 1 100%;
+  }
+
+  .qcontacts__item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qdone {
+    animation: none;
+  }
+
+  .qbtn,
+  .qbtn:active {
+    transform: none;
+    transition:
+      box-shadow 0.2s ease,
+      --qb-rim 0.2s ease;
+  }
+
+  .qbtn__bead svg {
+    transition: none;
+  }
+}
